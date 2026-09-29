@@ -13,11 +13,9 @@ import { ComingSoonPage } from '../pages/coming-soon/ComingSoonPage';
 import { DatabaseSettingsPage } from '../pages/settings/DatabaseSettingsPage';
 import { ForecastPage } from '../pages/forecast/ForecastPage';
 import { ShipmentsPage } from '../pages/shipment/ShipmentsPage';
-import { TrackingPage } from '../pages/tracking/TrackingPage';
 import { ReceivingPage } from '../pages/receiving/ReceivingPage';
 import { ReportsPage } from '../pages/reports/ReportsPage';
 import { ClaimsPage } from '../pages/claims/ClaimsPage';
-import { ControlTowerPage } from '../pages/control-tower/ControlTowerPage';
 import { InventoryPage } from '../pages/inventory/InventoryPage';
 import { InvoicesPage } from '../pages/invoices/InvoicesPage';
 import { SystemTestingPage } from '../pages/testing/SystemTestingPage';
@@ -31,8 +29,6 @@ export const AppLayout: React.FC = () => {
     switch (key) {
       case 'dashboard':
         return ['Sistem', 'Dashboard Utama'];
-      case 'control-tower':
-        return ['Operasional', 'Control Tower & AI Copilot'];
       case 'customers':
         return ['Master Data', 'Customers'];
       case 'products':
@@ -51,8 +47,6 @@ export const AppLayout: React.FC = () => {
         return ['Operasional', 'Forecast Management'];
       case 'shipment':
         return ['Operasional', 'Shipment & Surat Jalan'];
-      case 'tracking':
-        return ['Operasional', 'Live Tracking & Armada'];
       case 'receiving':
         return ['Operasional', 'DC Receiving & BAST'];
       case 'inventory':
@@ -74,8 +68,6 @@ export const AppLayout: React.FC = () => {
     switch (currentKey) {
       case 'dashboard':
         return <DashboardPage onNavigate={(key) => setCurrentKey(key)} />;
-      case 'control-tower':
-        return <ControlTowerPage />;
       case 'customers':
         return <CustomersPage />;
       case 'products':
@@ -94,8 +86,6 @@ export const AppLayout: React.FC = () => {
         return <ForecastPage />;
       case 'shipment':
         return <ShipmentsPage />;
-      case 'tracking':
-        return <TrackingPage />;
       case 'receiving':
         return <ReceivingPage />;
       case 'inventory':

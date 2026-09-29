@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   TrendingUp,
   Truck,
-  Navigation,
   PackageCheck,
   FileBarChart,
   Users,
@@ -16,7 +15,6 @@ import {
   X,
   Boxes,
   AlertCircle,
-  Compass,
   Layers,
   Receipt,
   Terminal,
@@ -26,10 +24,8 @@ import { useAuth } from '../../hooks/useAuth';
 
 export type NavItemKey =
   | 'dashboard'
-  | 'control-tower'
   | 'forecast'
   | 'shipment'
-  | 'tracking'
   | 'receiving'
   | 'inventory'
   | 'reports'
@@ -130,19 +126,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             <button
-              onClick={() => handleNavClick('control-tower')}
-              className={navItemClass('control-tower')}
-            >
-              <div className="flex items-center gap-2.5">
-                <Compass className="w-4 h-4 shrink-0 text-sky-400" />
-                <span className="font-semibold">Control Tower</span>
-              </div>
-              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-900/60 text-emerald-300">
-                AI
-              </span>
-            </button>
-
-            <button
               onClick={() => handleNavClick('forecast')}
               className={navItemClass('forecast')}
             >
@@ -159,16 +142,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="flex items-center gap-2.5">
                 <Truck className="w-4 h-4 shrink-0" />
                 <span>Shipment</span>
-              </div>
-            </button>
-
-            <button
-              onClick={() => handleNavClick('tracking')}
-              className={navItemClass('tracking')}
-            >
-              <div className="flex items-center gap-2.5">
-                <Navigation className="w-4 h-4 shrink-0" />
-                <span>Tracking</span>
               </div>
             </button>
 

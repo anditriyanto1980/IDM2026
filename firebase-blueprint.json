@@ -1,0 +1,172 @@
+{
+  "entities": {
+    "customer": {
+      "title": "Customer",
+      "description": "Master entitas pelanggan B2B",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customer_code": { "type": "string" },
+        "customer_name": { "type": "string" },
+        "description": { "type": "string" },
+        "is_active": { "type": "boolean" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["customer_code", "customer_name", "is_active"]
+    },
+    "product": {
+      "title": "Product",
+      "description": "Master SKU Kurma Akram",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sku": { "type": "string" },
+        "product_name": { "type": "string" },
+        "description": { "type": "string" },
+        "unit": { "type": "string" },
+        "is_active": { "type": "boolean" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["sku", "product_name", "is_active"]
+    },
+    "region": {
+      "title": "Region",
+      "description": "Master Wilayah Operasional",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "region_code": { "type": "string" },
+        "region_name": { "type": "string" },
+        "description": { "type": "string" },
+        "is_active": { "type": "boolean" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["region_code", "region_name", "is_active"]
+    },
+    "distributionCenter": {
+      "title": "DistributionCenter",
+      "description": "Master Distribution Center",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "dc_code": { "type": "string" },
+        "dc_name": { "type": "string" },
+        "customer_id": { "type": "string" },
+        "region_id": { "type": "string" },
+        "city": { "type": "string" },
+        "province": { "type": "string" },
+        "address": { "type": "string" },
+        "pic_name": { "type": "string" },
+        "pic_phone": { "type": "string" },
+        "is_active": { "type": "boolean" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["dc_code", "dc_name", "customer_id", "region_id", "is_active"]
+    },
+    "forecast": {
+      "title": "Forecast",
+      "description": "Dokumen Rencana Alokasi Forecast",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "forecast_number": { "type": "string" },
+        "customer_id": { "type": "string" },
+        "dc_id": { "type": "string" },
+        "region_id": { "type": "string" },
+        "period": { "type": "string" },
+        "forecast_date": { "type": "string" },
+        "target_delivery_date": { "type": "string" },
+        "status": { "type": "string" },
+        "total_qty": { "type": "number" },
+        "total_shipped": { "type": "number" },
+        "total_received": { "type": "number" },
+        "outstanding_qty": { "type": "number" },
+        "items": { "type": "array" }
+      },
+      "required": ["forecast_number", "customer_id", "dc_id", "period", "total_qty"]
+    },
+    "shipment": {
+      "title": "Shipment",
+      "description": "Dokumen Pengiriman Surat Jalan",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "shipment_number": { "type": "string" },
+        "forecast_id": { "type": "string" },
+        "customer_id": { "type": "string" },
+        "dc_id": { "type": "string" },
+        "shipment_date": { "type": "string" },
+        "estimated_arrival_date": { "type": "string" },
+        "transporter_name": { "type": "string" },
+        "driver_name": { "type": "string" },
+        "driver_phone": { "type": "string" },
+        "vehicle_plate_number": { "type": "string" },
+        "status": { "type": "string" },
+        "total_qty": { "type": "number" },
+        "items": { "type": "array" }
+      },
+      "required": ["shipment_number", "customer_id", "dc_id", "transporter_name", "status"]
+    },
+    "receivingInspection": {
+      "title": "ReceivingInspection",
+      "description": "Berita Acara Serah Terima (BAST)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "inspection_number": { "type": "string" },
+        "shipment_id": { "type": "string" },
+        "shipment_number": { "type": "string" },
+        "customer_id": { "type": "string" },
+        "dc_id": { "type": "string" },
+        "received_date": { "type": "string" },
+        "inspector_name": { "type": "string" },
+        "driver_name": { "type": "string" },
+        "total_shipped_qty": { "type": "number" },
+        "total_good_qty": { "type": "number" },
+        "total_damaged_qty": { "type": "number" },
+        "total_shortage_qty": { "type": "number" },
+        "status": { "type": "string" },
+        "items": { "type": "array" }
+      },
+      "required": ["inspection_number", "shipment_id", "customer_id", "dc_id", "status"]
+    }
+  },
+  "firestore": {
+    "/customers/{customerId}": {
+      "schema": "customer",
+      "description": "Koleksi data induk pelanggan"
+    },
+    "/products/{productId}": {
+      "schema": "product",
+      "description": "Koleksi SKU kurma resmi"
+    },
+    "/regions/{regionId}": {
+      "schema": "region",
+      "description": "Koleksi wilayah operasional"
+    },
+    "/distribution_centers/{dcId}": {
+      "schema": "distributionCenter",
+      "description": "Koleksi 8 Distribution Center nasional"
+    },
+    "/forecasts/{forecastId}": {
+      "schema": "forecast",
+      "description": "Koleksi dokumen forecast kebutuhan"
+    },
+    "/shipments/{shipmentId}": {
+      "schema": "shipment",
+      "description": "Koleksi surat jalan dan pengiriman"
+    },
+    "/receiving_inspections/{inspectionId}": {
+      "schema": "receivingInspection",
+      "description": "Koleksi BAST penerimaan DC"
+    },
+    "/warehouses/{warehouseId}": {
+      "schema": "warehouse",
+      "description": "Koleksi fasilitas pergudangan pusat & penyangga"
+    }
+  }
+}

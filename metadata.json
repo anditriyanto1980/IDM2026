@@ -1,0 +1,6 @@
+{
+  "name": "IDM Tracking System",
+  "description": "Sistem tracking distribusi dan alokasi produk ke Distribution Center (DC) Indogrosir dan Indomarco secara nasional.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,109 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // System Health Ping
+    match /system_health/{id} {
+      allow read, write: if true;
+    }
+
+    // Master Data Collections: Customers
+    match /customers/{customerId} {
+      allow read: if true;
+      allow write: if isValidId(customerId);
+    }
+
+    // Products
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isValidId(productId);
+    }
+
+    // Regions
+    match /regions/{regionId} {
+      allow read: if true;
+      allow write: if isValidId(regionId);
+    }
+
+    // Distribution Centers
+    match /distribution_centers/{dcId} {
+      allow read: if true;
+      allow write: if isValidId(dcId);
+    }
+
+    // Forecasts
+    match /forecasts/{forecastId} {
+      allow read: if true;
+      allow write: if isValidId(forecastId);
+    }
+
+    // Shipments
+    match /shipments/{shipmentId} {
+      allow read: if true;
+      allow write: if isValidId(shipmentId);
+    }
+
+    // Receiving Inspections (BAST)
+    match /receiving_inspections/{inspectionId} {
+      allow read: if true;
+      allow write: if isValidId(inspectionId);
+    }
+
+    // Claims
+    match /claims/{claimId} {
+      allow read: if true;
+      allow write: if isValidId(claimId);
+    }
+
+    // Inventory
+    match /inventory/{inventoryId} {
+      allow read: if true;
+      allow write: if isValidId(inventoryId);
+    }
+
+    // Invoices
+    match /invoices/{invoiceId} {
+      allow read: if true;
+      allow write: if isValidId(invoiceId);
+    }
+
+    // Activity Logs
+    match /activity_logs/{logId} {
+      allow read: if true;
+      allow write: if isValidId(logId);
+    }
+
+    // Warehouses (Central Hub, Buffer, Transit Facilities)
+    match /warehouses/{warehouseId} {
+      allow read: if true;
+      allow write: if isValidId(warehouseId);
+    }
+
+    // Milestones
+    match /milestones/{milestoneId} {
+      allow read: if true;
+      allow write: if isValidId(milestoneId);
+    }
+
+    // Stock Mutations
+    match /stock_mutations/{mutationId} {
+      allow read: if true;
+      allow write: if isValidId(mutationId);
+    }
+
+    // Notifications
+    match /notifications/{notificationId} {
+      allow read: if true;
+      allow write: if isValidId(notificationId);
+    }
+  }
+}

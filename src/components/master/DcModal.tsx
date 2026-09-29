@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../common/Modal';
 import { DistributionCenter, Customer, Region } from '../../types';
+import { Plus } from 'lucide-react';
 
 interface DcModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ interface DcModalProps {
   customers: Customer[];
   regions: Region[];
   isLoading?: boolean;
+  onQuickAddRegion?: () => void;
 }
 
 export const DcModal: React.FC<DcModalProps> = ({
@@ -31,6 +33,7 @@ export const DcModal: React.FC<DcModalProps> = ({
   customers,
   regions,
   isLoading = false,
+  onQuickAddRegion,
 }) => {
   const [dcCode, setDcCode] = useState('');
   const [dcName, setDcName] = useState('');
@@ -211,9 +214,20 @@ export const DcModal: React.FC<DcModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Wilayah (Region) <span className="text-rose-500">*</span>
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-semibold text-slate-700">
+                Wilayah (Region) <span className="text-rose-500">*</span>
+              </label>
+              {onQuickAddRegion && (
+                <button
+                  type="button"
+                  onClick={onQuickAddRegion}
+                  className="text-[11px] font-semibold text-sky-800 hover:text-sky-950 flex items-center gap-1 cursor-pointer"
+                >
+                  <Plus className="w-3 h-3" /> Tambah Wilayah
+                </button>
+              )}
+            </div>
             <select
               required
               value={regionId}

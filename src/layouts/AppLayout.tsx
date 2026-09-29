@@ -5,7 +5,6 @@ import { ToastContainer } from '../components/common/ToastContainer';
 import { DashboardPage } from '../pages/dashboard/DashboardPage';
 import { CustomersPage } from '../pages/customers/CustomersPage';
 import { ProductsPage } from '../pages/products/ProductsPage';
-import { RegionsPage } from '../pages/regions/RegionsPage';
 import { DistributionCentersPage } from '../pages/distribution-centers/DistributionCentersPage';
 import { UsersPage } from '../pages/users/UsersPage';
 import { AuditLogsPage } from '../pages/audit-logs/AuditLogsPage';
@@ -33,8 +32,6 @@ export const AppLayout: React.FC = () => {
         return ['Master Data', 'Customers'];
       case 'products':
         return ['Master Data', 'Products'];
-      case 'regions':
-        return ['Master Data', 'Regions'];
       case 'dcs':
         return ['Master Data', 'Distribution Centers'];
       case 'users':
@@ -72,8 +69,6 @@ export const AppLayout: React.FC = () => {
         return <CustomersPage />;
       case 'products':
         return <ProductsPage />;
-      case 'regions':
-        return <RegionsPage />;
       case 'dcs':
         return <DistributionCentersPage />;
       case 'users':

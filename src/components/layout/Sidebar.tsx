@@ -7,7 +7,6 @@ import {
   FileBarChart,
   Users,
   Package,
-  MapPin,
   Building2,
   UserCog,
   History,
@@ -33,7 +32,6 @@ export type NavItemKey =
   | 'invoices'
   | 'customers'
   | 'products'
-  | 'regions'
   | 'dcs'
   | 'users'
   | 'logs'
@@ -220,16 +218,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="flex items-center gap-2.5">
                 <Package className="w-4 h-4 shrink-0" />
                 <span>Products</span>
-              </div>
-            </button>
-
-            <button
-              onClick={() => handleNavClick('regions')}
-              className={navItemClass('regions')}
-            >
-              <div className="flex items-center gap-2.5">
-                <MapPin className="w-4 h-4 shrink-0" />
-                <span>Regions</span>
               </div>
             </button>
 

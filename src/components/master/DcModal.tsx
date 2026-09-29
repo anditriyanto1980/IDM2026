@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../common/Modal';
-import { DistributionCenter, Customer, Region } from '../../types';
-import { Plus } from 'lucide-react';
+import { DistributionCenter, Customer } from '../../types';
 
 interface DcModalProps {
   isOpen: boolean;
@@ -20,9 +19,8 @@ interface DcModalProps {
   }) => Promise<void>;
   dc?: DistributionCenter | null;
   customers: Customer[];
-  regions: Region[];
+  existingRegions?: string[];
   isLoading?: boolean;
-  onQuickAddRegion?: () => void;
 }
 
 export const DcModal: React.FC<DcModalProps> = ({
@@ -31,9 +29,8 @@ export const DcModal: React.FC<DcModalProps> = ({
   onSave,
   dc,
   customers,
-  regions,
+  existingRegions = [],
   isLoading = false,
-  onQuickAddRegion,
 }) => {
   const [dcCode, setDcCode] = useState('');
   const [dcName, setDcName] = useState('');
@@ -52,7 +49,7 @@ export const DcModal: React.FC<DcModalProps> = ({
       setDcCode(dc.dc_code);
       setDcName(dc.dc_name);
       setCustomerId(dc.customer_id);
-      setRegionId(dc.region_id);
+      setRegionId(dc.region?.region_name || dc.region_id || '');
       setCity(dc.city);
       setProvince(dc.province);
       setAddress(dc.address || '');
@@ -63,7 +60,7 @@ export const DcModal: React.FC<DcModalProps> = ({
       setDcCode('');
       setDcName('');
       setCustomerId(customers.length > 0 ? customers[0].id : '');
-      setRegionId(regions.length > 0 ? regions[0].id : '');
+      setRegionId('');
       setCity('');
       setProvince('');
       setAddress('');
@@ -72,7 +69,7 @@ export const DcModal: React.FC<DcModalProps> = ({
       setIsActive(true);
     }
     setError(null);
-  }, [dc, isOpen, customers, regions]);
+  }, [dc, isOpen, customers]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,8 +90,8 @@ export const DcModal: React.FC<DcModalProps> = ({
       setError('Customer wajib dipilih.');
       return;
     }
-    if (!regionId) {
-      setError('Wilayah (Region) wajib dipilih.');
+    if (!regionId.trim()) {
+      setError('Wilayah / Region DC wajib diisi.');
       return;
     }
     if (!city.trim()) {
@@ -214,33 +211,28 @@ export const DcModal: React.FC<DcModalProps> = ({
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-semibold text-slate-700">
-                Wilayah (Region) <span className="text-rose-500">*</span>
-              </label>
-              {onQuickAddRegion && (
-                <button
-                  type="button"
-                  onClick={onQuickAddRegion}
-                  className="text-[11px] font-semibold text-sky-800 hover:text-sky-950 flex items-center gap-1 cursor-pointer"
-                >
-                  <Plus className="w-3 h-3" /> Tambah Wilayah
-                </button>
-              )}
-            </div>
-            <select
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Wilayah / Region DC <span className="text-rose-500">*</span>
+            </label>
+            <input
+              type="text"
               required
               value={regionId}
               onChange={(e) => setRegionId(e.target.value)}
+              placeholder="Contoh: Jabodetabek, Jawa Barat, Jawa Timur, dll."
+              list="region-suggestions-list"
               className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-700 focus:bg-white transition-all"
-            >
-              <option value="" disabled>Pilih Wilayah...</option>
-              {regions.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.region_name} ({r.region_code})
-                </option>
-              ))}
-            </select>
+            />
+            {existingRegions && existingRegions.length > 0 && (
+              <datalist id="region-suggestions-list">
+                {existingRegions.map((rName) => (
+                  <option key={rName} value={rName} />
+                ))}
+              </datalist>
+            )}
+            <p className="text-[11px] text-slate-400 mt-1">
+              Bisa langsung diisi manual (bebas ketik wilayah cakupan DC).
+            </p>
           </div>
         </div>
 

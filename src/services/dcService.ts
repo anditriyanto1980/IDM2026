@@ -38,13 +38,18 @@ export const getDistributionCenters = async (
   // 3. Filter
   dcs = dcs.filter((dc) => {
     const matchCustomer = !customerId || customerId === 'all' || dc.customer_id === customerId;
-    const matchRegion = !regionId || regionId === 'all' || dc.region_id === regionId;
+    const matchRegion =
+      !regionId ||
+      regionId === 'all' ||
+      dc.region_id === regionId ||
+      dc.region_id?.toLowerCase() === regionId.toLowerCase();
     const matchStatus =
       status === 'all' ? true : status === 'active' ? dc.is_active : !dc.is_active;
     const matchSearch =
       search === '' ||
       dc.dc_code.toLowerCase().includes(search.toLowerCase()) ||
       dc.dc_name.toLowerCase().includes(search.toLowerCase()) ||
+      (dc.region_id && dc.region_id.toLowerCase().includes(search.toLowerCase())) ||
       dc.city.toLowerCase().includes(search.toLowerCase()) ||
       dc.province.toLowerCase().includes(search.toLowerCase()) ||
       (dc.pic_name && dc.pic_name.toLowerCase().includes(search.toLowerCase()));
@@ -52,42 +57,63 @@ export const getDistributionCenters = async (
     return matchCustomer && matchRegion && matchStatus && matchSearch;
   });
 
-  // Attach relations
-  return dcs.map((dc) => ({
-    ...dc,
-    customer: customers.find((c) => c.id === dc.customer_id),
-    region: regions.find((r) => r.id === dc.region_id),
-  }));
+  // Attach relations (support both existing region objects and direct manual region text)
+  return dcs.map((dc) => {
+    const linkedRegion = regions.find(
+      (r) => r.id === dc.region_id || r.region_name.toLowerCase() === (dc.region_id || '').toLowerCase()
+    );
+    const regionName = linkedRegion?.region_name || dc.region_id || 'Wilayah Umum';
+    return {
+      ...dc,
+      customer: customers.find((c) => c.id === dc.customer_id),
+      region: linkedRegion || {
+        id: dc.region_id || 'reg-manual',
+        region_code: regionName.toUpperCase().replace(/\s+/g, '_'),
+        region_name: regionName,
+        is_active: true,
+        created_at: dc.created_at || new Date().toISOString(),
+        updated_at: dc.updated_at || new Date().toISOString(),
+      },
+    };
+  });
 };
 
 export const getDistributionCenterById = async (id: string): Promise<DistributionCenter | null> => {
+  let dc: DistributionCenter | null = null;
   try {
     const snap = await getDocs(collection(db, 'distribution_centers'));
     const docFound = snap.docs.find((d) => d.id === id);
     if (docFound) {
-      const dc = docFound.data() as DistributionCenter;
-      const customers = getStored<Customer[]>(STORAGE_KEYS.CUSTOMERS, []);
-      const regions = getStored<Region[]>(STORAGE_KEYS.REGIONS, []);
-      return {
-        ...dc,
-        customer: customers.find((c) => c.id === dc.customer_id),
-        region: regions.find((r) => r.id === dc.region_id),
-      };
+      dc = docFound.data() as DistributionCenter;
     }
   } catch (err) {
     console.warn('Firebase getDCById failed:', err);
   }
 
-  const list = getStored<DistributionCenter[]>(STORAGE_KEYS.DCS, []);
-  const dc = list.find((d) => d.id === id);
+  if (!dc) {
+    const list = getStored<DistributionCenter[]>(STORAGE_KEYS.DCS, []);
+    dc = list.find((d) => d.id === id) || null;
+  }
   if (!dc) return null;
 
   const customers = getStored<Customer[]>(STORAGE_KEYS.CUSTOMERS, []);
   const regions = getStored<Region[]>(STORAGE_KEYS.REGIONS, []);
+  const linkedRegion = regions.find(
+    (r) => r.id === dc?.region_id || r.region_name.toLowerCase() === (dc?.region_id || '').toLowerCase()
+  );
+  const regionName = linkedRegion?.region_name || dc.region_id || 'Wilayah Umum';
+
   return {
     ...dc,
-    customer: customers.find((c) => c.id === dc.customer_id),
-    region: regions.find((r) => r.id === dc.region_id),
+    customer: customers.find((c) => c.id === dc?.customer_id),
+    region: linkedRegion || {
+      id: dc.region_id || 'reg-manual',
+      region_code: regionName.toUpperCase().replace(/\s+/g, '_'),
+      region_name: regionName,
+      is_active: true,
+      created_at: dc.created_at || new Date().toISOString(),
+      updated_at: dc.updated_at || new Date().toISOString(),
+    },
   };
 };
 
@@ -101,7 +127,7 @@ export const createDistributionCenter = async (
   if (!code) throw new Error('Kode DC wajib diisi.');
   if (!name) throw new Error('Nama DC wajib diisi.');
   if (!payload.customer_id) throw new Error('Customer wajib dipilih.');
-  if (!payload.region_id) throw new Error('Wilayah wajib dipilih.');
+  if (!payload.region_id || !payload.region_id.trim()) throw new Error('Wilayah / Region DC wajib diisi.');
 
   const existingList = getStored<DistributionCenter[]>(STORAGE_KEYS.DCS, []);
   const duplicate = existingList.find((d) => d.dc_code.toLowerCase() === code.toLowerCase());
@@ -114,7 +140,7 @@ export const createDistributionCenter = async (
     dc_code: code,
     dc_name: name,
     customer_id: payload.customer_id,
-    region_id: payload.region_id,
+    region_id: payload.region_id.trim(),
     city: payload.city.trim(),
     province: payload.province.trim(),
     address: payload.address?.trim() || null,
@@ -175,6 +201,7 @@ export const updateDistributionCenter = async (
     ...payload,
     dc_code: payload.dc_code ? payload.dc_code.trim().toUpperCase() : existingList[targetIndex].dc_code,
     dc_name: payload.dc_name ? payload.dc_name.trim() : existingList[targetIndex].dc_name,
+    region_id: payload.region_id !== undefined ? payload.region_id.trim() : existingList[targetIndex].region_id,
     updated_at: new Date().toISOString(),
   };
 
